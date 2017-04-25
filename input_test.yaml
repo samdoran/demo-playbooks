@@ -1,0 +1,7 @@
+- name: Hello there
+  hosts: all
+
+  tasks:
+    - debug:
+        msg: "Hello {{ mydict.foo }}"
+      tags: debug
