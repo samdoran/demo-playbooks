@@ -1,0 +1,12 @@
+- name: Show ulimit
+  hosts: localhost
+  connection: local
+  become: no
+
+  - name: Show ulimit
+    command: ulimit -a
+    register: ulimits
+
+  - debug:
+      var: ulimits.stdout_lines
+    tags: debug
