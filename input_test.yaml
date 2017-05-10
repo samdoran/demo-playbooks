@@ -3,5 +3,5 @@
 
   tasks:
     - debug:
-        msg: "Hello {{ mydict.foo }}"
+        msg: "Hello {{ myvar }}"
       tags: debug
