@@ -3,10 +3,12 @@
   connection: local
   become: no
 
-  - name: Show ulimit
-    command: ulimit -a
-    register: ulimits
+  tasks:
 
-  - debug:
-      var: ulimits.stdout_lines
-    tags: debug
+    - name: Show ulimit
+      command: ulimit -a
+      register: ulimits
+
+    - debug:
+        var: ulimits.stdout_lines
+      tags: debug
