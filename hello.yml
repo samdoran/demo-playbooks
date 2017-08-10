@@ -1,0 +1,6 @@
+- name: Hello
+  hosts: "{{ target_hosts | default('localhost') }}"
+
+  tasks:
+    - debug:
+        msg: Hello world
