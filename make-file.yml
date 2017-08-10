@@ -1,0 +1,8 @@
+- name: Make a file
+  hosts: "{{ target_hosts | default('localhost') }}"
+
+  tasks:
+    - name: Create a file
+      copy:
+        content: test
+        dest: /tmp/test.txt
