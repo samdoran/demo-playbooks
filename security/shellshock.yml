@@ -1,0 +1,43 @@
+- name: Fix and test shellshock
+  hosts: "{{ target_hosts | default('linux') }}"
+  become: yes
+
+  tasks:
+    - name: RHEL | Update bash
+      yum:
+        name: bash
+        state: latest
+      when: "ansible_os_family == 'RedHat'"
+
+    - name: DEBIAN | Update bash
+      apt:
+        name: bash
+        state: latest
+        update_cache: yes
+      when: "ansible_os_family == 'Debian'"
+
+    - name: Test CVE-2014-6271
+      shell: 'env x=''() { :;}; echo vulnerable'' bash -c "echo this is a test"'
+      args:
+        executable: /bin/bash
+      register: CVE_2014_6271
+      failed_when: CVE_2014_6271.stdout | search('vulnerable')
+      ignore_errors: yes
+      changed_when: no
+
+    - name: Test CVE-2014-7169
+      shell: "env X='() { (a)=>\' bash -c 'echo date'; cat echo"
+      args:
+        executable: /bin/bash
+        chdir: /tmp
+      register: CVE_2014_7169
+      failed_when:
+        - not CVE_2014_7169.stdout | search('date')
+        - not CVE_2014_7169.stderr | search('No such file or directory')
+      ignore_errors: yes
+      changed_when: no
+
+    - name: Cleanup after CVE-2014-7169 test
+      file:
+        path: /tmp/echo
+        state: absent

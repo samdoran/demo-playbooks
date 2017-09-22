@@ -1,0 +1,61 @@
+- name: Harden Linux kernel
+  hosts: "{{ target_hosts | default('linux') }}"
+  become: yes
+
+  vars:
+    kernel_parameters:
+      - name: kernel.randomize_va_space
+        value: 2
+        reload: yes
+
+      - name: net.ipv4.conf.all.accept_source_route
+        value: 0
+        reload: yes
+
+      - name: net.ipv4.conf.default.accept_redirects
+        value: 0
+        reload: yes
+
+      - name: net.ipv4.conf.all.send_redirects
+        value: 0
+        reload: yes
+
+      - name: net.ipv4.ip_forward
+        value: 0
+        reload: yes
+
+      - name: net.ipv6.conf.all.accept_source_route
+        value: 0
+        reload: yes
+
+      - name: kernel.panic
+        state: absent
+        value: 2
+        reload: no
+
+  tasks:
+    - name: Set kernel parameters
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value | default(omit) }}"
+        state: "{{ item.state | default(omit) }}"
+        reload: "{{ item.reload | default(omit) }}"
+        ignoreerrors: "{{ item.ignoreerrors | default(omit) }}"
+      with_items: "{{ kernel_parameters }}"
+      notify:
+        - reboot system
+        - wait for system to come back up
+
+  handlers:
+    - name: reboot system
+      shell: sleep 2 && shutdown -r now
+      async: 5
+      poll: 0
+
+    - name: wait for system to come back up
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: 22
+        search_regex: OpenSSH
+        delay: 8
+      delegate_to: localhost

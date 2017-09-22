@@ -1,0 +1,23 @@
+- name: Harden Windows
+  hosts: "{{ target_hosts | default('windows') }}"
+
+  tasks:
+    - name: Restrict enumeration of shares
+      win_regedit:
+          key: 'HKLM:\System\CurrentControlSet\Control\Lsa'
+          value: RestrictAnonymous
+          data: 1
+          datatype: dword
+
+
+    - name: Install security udpates
+      win_updates:
+        category_name: "{{ win_update_category_name | default('SecurityUpdates') }}"
+        state: installed
+      ignore_errors: yes
+      notify: reboot windows
+
+  handlers:
+    - name: reboot windows
+      win_reboot:
+

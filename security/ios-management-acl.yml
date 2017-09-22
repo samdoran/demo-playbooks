@@ -1,0 +1,33 @@
+- name: Restrict access to management interfaces
+  hosts: ios
+  connection: local
+
+  vars:
+    cli:
+      host: "{{ ansible_host }}"
+      username: sdoran
+      password: "{{ vault_network_passwords.ios }}"
+
+  tasks:
+    - debug:
+        var: vault_network_passwords.ios
+      tags: debug
+    - name: Gather facts
+      ios_facts:
+      tags: facts
+
+    - name: Create management ACL
+      ios_config:
+        parents: ip access-list mgmnt
+        before: no ip access-list mgmnt
+        lines:
+          - 10 permit ip host 192.168.1.99 log
+          - 20 permit ip host 192.168.1.121 log
+
+    - name: Harden VTY lines
+      ios_config:
+        parents: line vty 0 15
+        lines:
+          - exec-timeout 15
+          - transport input ssh
+          - access mgmnt in

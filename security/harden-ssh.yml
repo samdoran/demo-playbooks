@@ -1,0 +1,73 @@
+- name: Harden SSH server
+  hosts: "{{ target_hosts | default('linux') }}"
+  become: yes
+
+  vars:
+    sshd_logon_banner: |
+      ###############################################################################
+      #                   ___    _   _______ ________  __    ______                 #
+      #                  /   |  / | / / ___//  _/ __ )/ /   / ____/                 #
+      #                 / /| | /  |/ /\__ \ / // __  / /   / __/                    #
+      #                / ___ |/ /|  /___/ // // /_/ / /___/ /___                    #
+      #               /_/  |_/_/ |_//____/___/_____/_____/_____/                    #
+      #                                                                             #
+      #                             AUTHORIZED USE ONLY                             #
+      #                                                                             #
+      #                           THIS SYSTEM IS MONITORED                          #
+      #                                                                             #
+      #                     UNAUTHORIZED USE STRICTLY PROHIBITED                    #
+      ###############################################################################
+
+    sshd_config_lines:
+      - regexp: ^#?PermitEmptyPasswords
+        line: PermitEmptyPasswords no
+
+      - regexp: (?i)^#?protocol
+        line: Protocol 2
+
+      - regexp: (?i)^#?x11forwarding
+        line: X11Forwarding yes
+
+      - regexp: ^#?Banner
+        line: Banner /etc/issue
+
+      - regexp: ^#?permituserenvironment
+        line: permituserenvironment no
+
+      - regexp: (?i)^#?Ciphers
+        line: Ciphers aes128-ctr,aes192-ctr,aes256-ctr
+
+      - regexp: ^#?ClientAliveInterval
+        line: ClientAliveInterval 600
+
+      - regexp: ^#?IgnoreRhosts
+        line: IgnoreRhosts yes
+
+  tasks:
+    - name: Harden ssh settings
+      lineinfile:
+        state: present
+        dest: /etc/ssh/sshd_config
+        line: "{{ item.line }}"
+        regexp: "{{ item.regexp }}"
+        validate: /usr/sbin/sshd -tf %s
+      with_items: "{{ sshd_config_lines }}"
+      notify: restart sshd
+
+    - name: Copy ssh logon banner
+      copy:
+        content: "{{ sshd_logon_banner }}"
+        dest: "{{ item }}"
+        owner: root
+        group: root
+        mode: 0644
+      with_items:
+          - /etc/issue
+          - /etc/issue.net
+          - /etc/motd
+
+  handlers:
+    - name: restart sshd
+      service:
+        name: sshd
+        state: restarted

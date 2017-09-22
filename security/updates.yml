@@ -1,0 +1,19 @@
+- name: Install all updates
+  hosts: "{{ target_hosts | default('linux') }}"
+  become: yes
+
+  tasks:
+    - name: RHEL | Install updates
+      yum:
+        name: "*"
+        state: latest
+        exclude: "{{ exclude_packages | default(omit) }}"
+      when: "ansible_os_family == 'RedHat'"
+
+    - name: DEBIAN | Install updates
+      apt:
+        update_cache: yes
+        cache_valid_time: 7200
+        name: "*"
+        state: latest
+      when: "ansible_os_family == 'Debian'"
