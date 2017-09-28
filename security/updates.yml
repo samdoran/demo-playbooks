@@ -10,10 +10,17 @@
         exclude: "{{ exclude_packages | default(omit) }}"
       when: "ansible_os_family == 'RedHat'"
 
+    - name: DEBIAN | Install aptitude
+      apt:
+        name: aptitude
+        state: present
+        update_cache: yes
+      when: "ansible_os_family == 'Debian'"
+
     - name: DEBIAN | Install updates
       apt:
         update_cache: yes
         cache_valid_time: 7200
-        name: "*"
-        state: latest
+        upgrade: full
+        only_upgrade: yes
       when: "ansible_os_family == 'Debian'"
