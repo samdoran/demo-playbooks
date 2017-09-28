@@ -64,7 +64,6 @@
       with_items:
           - /etc/issue
           - /etc/issue.net
-          - /etc/motd
 
   handlers:
     - name: restart sshd
