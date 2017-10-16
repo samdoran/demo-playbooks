@@ -2,13 +2,19 @@
   hosts: "{{ target_hosts | default('windows') }}"
 
   tasks:
+    - name: Enable Windows Firewall
+      win_firewall:
+        state: disabled
+        profiles:
+          - Private
+          - Domain
+
     - name: Restrict enumeration of shares
       win_regedit:
           key: 'HKLM:\System\CurrentControlSet\Control\Lsa'
           value: RestrictAnonymous
           data: 1
           datatype: dword
-
 
     - name: Install security udpates
       win_updates:

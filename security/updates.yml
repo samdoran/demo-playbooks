@@ -8,14 +8,14 @@
         name: "*"
         state: latest
         exclude: "{{ exclude_packages | default(omit) }}"
-      when: "ansible_os_family == 'RedHat'"
+      when: "ansible_pkg_mgr == 'yum'"
 
     - name: DEBIAN | Install aptitude
       apt:
         name: aptitude
         state: present
         update_cache: yes
-      when: "ansible_os_family == 'Debian'"
+      when: "ansible_pkg_mgr == 'apt'"
 
     - name: DEBIAN | Install updates
       apt:
@@ -23,4 +23,4 @@
         cache_valid_time: 7200
         upgrade: full
         only_upgrade: yes
-      when: "ansible_os_family == 'Debian'"
+      when: "ansible_pkg_mgr == 'apt'"

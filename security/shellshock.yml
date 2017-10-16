@@ -7,14 +7,14 @@
       yum:
         name: bash
         state: latest
-      when: "ansible_os_family == 'RedHat'"
+      when: "ansible_pkg_mgr == 'yum'"
 
     - name: DEBIAN | Update bash
       apt:
         name: bash
         state: latest
         update_cache: yes
-      when: "ansible_os_family == 'Debian'"
+      when: "ansible_pkg_mgr == 'apt'"
 
     - name: Test CVE-2014-6271
       shell: 'env x=''() { :;}; echo vulnerable'' bash -c "echo this is a test"'
