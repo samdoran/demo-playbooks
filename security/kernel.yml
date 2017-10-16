@@ -3,6 +3,7 @@
   become: yes
 
   vars:
+    reboot_systems: no
     kernel_parameters:
       - name: kernel.randomize_va_space
         value: 2
@@ -29,11 +30,17 @@
         reload: yes
 
       - name: kernel.panic
-        state: absent
         value: 2
         reload: no
 
   tasks:
+    - name: RHEL | Set sysctl_file path
+      set_fact:
+        sysctl_file: /usr/lib/sysctl.d/50-default.conf
+      when:
+        - ansible_distribution == 'RedHat'
+        - ansible_distribution_major_version | version_compare('7', '=')
+
     - name: Set kernel parameters
       sysctl:
         name: "{{ item.name }}"
@@ -41,6 +48,7 @@
         state: "{{ item.state | default(omit) }}"
         reload: "{{ item.reload | default(omit) }}"
         ignoreerrors: "{{ item.ignoreerrors | default(omit) }}"
+        sysctl_file: "{{ sysctl_file | default(omit) }}"
       with_items: "{{ kernel_parameters }}"
       notify:
         - reboot system
@@ -51,6 +59,7 @@
       shell: sleep 2 && shutdown -r now
       async: 5
       poll: 0
+      when: reboot_systems
 
     - name: wait for system to come back up
       wait_for:
@@ -59,3 +68,4 @@
         search_regex: OpenSSH
         delay: 8
       delegate_to: localhost
+      when: reboot_systems
