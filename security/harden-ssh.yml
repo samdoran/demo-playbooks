@@ -43,6 +43,9 @@
       - regexp: ^#?IgnoreRhosts
         line: IgnoreRhosts yes
 
+      - regexp: ^#?PermitRootLogin
+        line: PermitRootLogin no
+
   tasks:
     - name: Harden ssh settings
       lineinfile:

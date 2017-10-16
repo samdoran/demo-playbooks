@@ -3,7 +3,7 @@
   become: yes
 
   vars:
-    reboot_systems: no
+    reboot_systems: yes
     kernel_parameters:
       - name: kernel.randomize_va_space
         value: 2
