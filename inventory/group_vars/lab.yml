@@ -1,6 +1,2 @@
-# ansible_become: no
 ansible_user: vagrant
 ansible_password: vagrant
-# ansible_ask_pass: no
-# ansible_become_ask_pass: no
-# ansible_become: no
