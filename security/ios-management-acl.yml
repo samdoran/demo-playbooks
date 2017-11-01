@@ -12,7 +12,6 @@
     - name: Create management ACL
       ios_config:
         provider: "{{ cli }}"
-        # diff_against: running
         match: strict
         before: no ip access-list extended mgmnt
         parents: ip access-list extended mgmnt
@@ -30,4 +29,3 @@
           - exec-timeout 15 0
           - transport input ssh
           - access-class mgmnt in
-          - transport input ssh
