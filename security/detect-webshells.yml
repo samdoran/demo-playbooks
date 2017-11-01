@@ -1,0 +1,45 @@
+- name: Detect web shells
+  hosts: all
+  become: yes
+
+  vars:
+    log_paths:
+      debian:
+        path: /var/log/apache2/access.log
+        pattern: access.log
+      redhat:
+        path: /var/log/httpd/access_log
+        pattern: access_log
+
+  tasks:
+    - name: Look for suspicious log entries
+      command: grep -E file {{ log_paths[ansible_os_family | lower]['path'] }}
+      failed_when: no
+      changed_when: no
+      register: suspicous_log_entries
+
+    - name: Look for suspicious files
+      find:
+        path: "{{ search_path | default('/var/www') }}"
+        recurse: yes
+        follow: yes
+        file_type: file
+        hidden: yes
+        contains: '(passthru|exec|eval|shell_exec|assert|str_rot13|system|phpinfo|base64_decode|chmod|mkdir|fopen|fclose|readfile) *\('
+      register: suspicious_files
+
+    - name: Look for recently created files
+      find:
+        path: "{{ search_path | default('/var/www') }}"
+        recurse: yes
+        follow: yes
+        file_type: file
+        age: "{{ file_age | default('-7d') }}"
+      register: recently_created_files
+
+    - name: Write output
+      template:
+        src: "{{ playbook_dir }}/templates/report.j2"
+        dest: "{{ playbook_dir }}/results/{{ inventory_hostname }}.md"
+      become: no
+      delegate_to: localhost

@@ -1,0 +1,24 @@
+### Suspicious Log Entries ###
+{% for entry in suspicous_log_entries.stdout_lines %}
+{{ entry }}
+{% endfor %}
+
+### Suspicious Files ###
+{% for file in suspicious_files.files %}
+path: {{ file.path }}
+ctime: {{ file.ctime }}
+uid: {{ file.uid }}
+gid: {{ file.gid }}
+mode: {{ file.mode }}
+
+{% endfor %}
+
+### Files Created in the Last {{ file_age | default('-7d') }} ###
+{% for file in recently_created_files.files %}
+path: {{ file.path }}
+ctime: {{ file.ctime }}
+uid: {{ file.uid }}
+gid: {{ file.gid }}
+mode: {{ file.mode }}
+
+{% endfor %}
