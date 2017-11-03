@@ -6,10 +6,8 @@
     log_paths:
       debian:
         path: /var/log/apache2/access.log
-        pattern: access.log
       redhat:
         path: /var/log/httpd/access_log
-        pattern: access_log
 
   tasks:
     - name: Look for suspicious log entries
