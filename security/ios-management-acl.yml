@@ -4,6 +4,11 @@
   connection: local
 
   tasks:
+    - debug:
+        var: cli
+        verbosity: 2
+      tags: facts
+
     - name: Gather facts
       ios_facts:
         provider: "{{ cli }}"
