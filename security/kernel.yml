@@ -62,10 +62,6 @@
       when: reboot_systems
 
     - name: wait for system to come back up
-      wait_for:
-        host: "{{ ansible_host }}"
-        port: 22
-        search_regex: OpenSSH
-        delay: 8
-      delegate_to: localhost
+      wait_for_connection:
+        delay: 15
       when: reboot_systems
