@@ -11,12 +11,10 @@
 
     - name: Gather facts
       ios_facts:
-        provider: "{{ cli }}"
       tags: facts
 
     - name: Create management ACL
       ios_config:
-        provider: "{{ cli }}"
         match: strict
         before: no ip access-list extended mgmnt
         parents: ip access-list extended mgmnt
@@ -27,7 +25,6 @@
 
     - name: Harden VTY lines
       ios_config:
-        provider: "{{ cli }}"
         parents:
           - line vty 0 4
         lines:
