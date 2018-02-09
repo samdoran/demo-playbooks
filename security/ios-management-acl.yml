@@ -1,18 +1,9 @@
 - name: Restrict access to management interfaces
-  hosts: ios
+  hosts: "{{ target_hosts | default('ios') }}"
   gather_facts: no
   connection: local
 
   tasks:
-    - debug:
-        var: cli
-        verbosity: 2
-      tags: facts
-
-    - name: Gather facts
-      ios_facts:
-      tags: facts
-
     - name: Create management ACL
       ios_config:
         match: strict
