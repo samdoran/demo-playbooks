@@ -4,10 +4,11 @@
   tasks:
     - name: Enable Windows Firewall
       win_firewall:
-        state: disabled
+        state: enabled
         profiles:
           - Private
           - Domain
+      tags: fw
 
     - name: Restrict enumeration of shares
       win_regedit:
