@@ -4,7 +4,7 @@
   tasks:
     - name: Enable Windows Firewall
       win_firewall:
-        state: enabled
+        state: "{{ win_firewall_state | default('enabled') }}"
         profiles:
           - Private
           - Domain
