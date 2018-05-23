@@ -1,0 +1,11 @@
+- name: Test pause
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  become: no
+
+  tasks:
+    - debug: 
+        var: ansible_version
+
+    - pause:
