@@ -1,0 +1,11 @@
+- name: Run yum updates
+  hosts: "{{ all | default(target_hosts) }}"
+  become: yes
+
+  tasks:
+    - name: Update packages
+      yum:
+        name: "{{ yum_packages_to_update | default('*') }}"
+        state: latest
+        exclude: "{{ yum_packages_to_exclude | default(omit) }}"
+        security: "{{ yum_only_security_updates | default(omit) }}"
