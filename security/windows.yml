@@ -17,7 +17,7 @@
           data: 1
           datatype: dword
 
-    - name: Install security udpates
+    - name: Install security updates
       win_updates:
         category_name: "{{ win_update_category_name | default('SecurityUpdates') }}"
         state: installed
