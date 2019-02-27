@@ -1,0 +1,7 @@
+- name: Reboot all hosts
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Reboot all hosts
+      action: "{{ reboot_action | default('reboot') }}"

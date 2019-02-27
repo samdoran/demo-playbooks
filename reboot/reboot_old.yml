@@ -1,0 +1,9 @@
+- name: Reboot Linux the old way
+  hosts: linux
+  become: yes
+
+  tasks:
+    - name: Reboot linux hosts using shell module
+      shell: sleep 2 && shutdown -r now
+      async: 90
+      poll: 0

@@ -1,0 +1,69 @@
+Vagrant.configure(2) do |config|
+  config.ssh.insert_key = false
+
+    # RHEL 7
+  config.vm.define 'lab-rhel7' do |node|
+    node.vm.box = 'samdoran/rhel7'
+    node.vm.hostname = 'lab-rhel7'
+    node.vm.network 'private_network', ip: '10.77.1.32'
+    node.vm.synced_folder '.', '/vagrant', disabled: true
+
+    node.vm.provider :virtualbox do |vbox|
+      vbox.name = 'lab-rhel7'
+      vbox.memory = 512
+      vbox.cpus = 1
+    end
+  end
+
+  # Debian8/Jesse
+  config.vm.define 'lab-deb8' do |node|
+    node.vm.box = 'debian/jessie64'
+    node.vm.hostname = 'lab-deb8'
+    node.vm.network 'private_network', ip: '10.77.1.39'
+    node.vm.synced_folder '.', '/vagrant', disabled: true
+
+    node.vm.provider :virtualbox do |vbox|
+      vbox.name = 'lab-deb8'
+    end
+  end
+
+  # Windows
+  config.vm.define 'lab-win2k16' do |node|
+    node.vm.box = 'jborean93/WindowsServer2016'
+    node.vm.hostname = 'lab-win2k16'
+    node.vm.network 'private_network', ip: '10.77.1.40'
+    node.vm.synced_folder '.', '/vagrant', disabled: true
+
+    node.vm.provider :virtualbox do |vbox|
+      vbox.name = 'lab-win2k16'
+      vbox.memory = 2048
+      vbox.cpus = 2
+    end
+  end
+
+  # OpenBSD 6
+  config.vm.define 'lab-openbsd6' do |node|
+    node.vm.box = 'roboxes/openbsd6'
+    node.vm.hostname = 'lab-openbsd6'
+    node.vm.network 'private_network', ip: '10.77.1.41'
+    node.vm.synced_folder '.', '/vagrant', disabled: true
+
+    node.vm.provider :virtualbox do |vbox|
+      vbox.name = 'lab-openbsd6'
+      vbox.memory = 512
+    end
+  end
+
+  # Alpine Linux
+  config.vm.define 'lab-alpine' do |node|
+    node.vm.box = 'maier/alpine-3.8-x86_64'
+    node.vm.hostname = 'lab-alpine'
+    node.vm.network 'private_network', ip: '10.77.1.31'
+    node.vm.synced_folder '.', '/vagrant', disabled: true
+
+    node.vm.provider :virtualbox do |vbox|
+      vbox.name = 'lab-alpine'
+      vbox.memory = 256
+    end
+  end
+end

@@ -3,4 +3,5 @@ ansible_connection: winrm
 ansible_user: vagrant
 ansible_password: vagrant
 ansible_winrm_transport: ntlm
+reboot_action: win_reboot
 ansible_become: no

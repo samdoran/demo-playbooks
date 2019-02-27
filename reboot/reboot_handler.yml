@@ -1,0 +1,14 @@
+- name: Make a change the triggers a reboot
+  hosts: linux
+  become: yes
+
+  tasks:
+    - name: Run a task that reports a change
+      debug:
+        msg: This task always reports a change
+      change_when: yes
+      notify: reboot system
+
+  handlers:
+    - name: reboot system
+      reboot:
